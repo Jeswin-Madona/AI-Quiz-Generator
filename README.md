@@ -164,7 +164,7 @@ AI-Quiz-Generator
 ## Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/AI-Quiz-Generator.git
+git clone https://github.com/Jeswin-Madona/AI-Quiz-Generator.git
 ```
 
 ---
