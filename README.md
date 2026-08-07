@@ -64,7 +64,7 @@ Supabase Database
    ▼
 React Quiz Interface
 ```
-
+![Architecture](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/c04193be2e4f09393510a26a7ddd2761eb78b2da/screenshots/architecture.png)
 ---
 
 # ⚙ Workflow Overview
