@@ -4,6 +4,9 @@ An AI-powered Quiz Generator that creates multiple-choice quizzes instantly usin
 
 The application allows users to select a topic and difficulty level, generates AI-based quiz questions, stores them in a PostgreSQL database, and displays the quiz through a modern React interface.
 
+![Cover Image](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/cover%20page.png)
+
+
 ---
 
 ## 🚀 Features
@@ -65,6 +68,7 @@ Supabase Database
 React Quiz Interface
 ```
 ![Architecture](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/c04193be2e4f09393510a26a7ddd2761eb78b2da/screenshots/architecture.png)
+
 ---
 
 # ⚙ Workflow Overview
@@ -119,31 +123,39 @@ AI-Quiz-Generator
 
 ### Login Page
 
-(Add Screenshot)
+![Login Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/login%20page.png)
 
 ---
 
 ### Home Page
 
-(Add Screenshot)
+![Home Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/home%20page.png)
 
 ---
 
 ### Quiz Page
 
-(Add Screenshot)
+![Quiz Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/quiz%20page.png)
 
 ---
 
 ### Result Page
 
-(Add Screenshot)
+![Result Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/result%20page.png)
+
+---
+
+### Review Page
+
+![Review Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/review%20page.png)
 
 ---
 
 ### n8n Workflow
 
-(Add Workflow Screenshot)
+![Quiz Generator Workflow](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow1.png)
+
+![Get Quiz By ID](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow2.png)
 
 ---
 
