@@ -1,0 +1,105 @@
+{
+  "name": "Get Quiz By ID",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "get-quiz",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f02515bf-ad65-4daa-9960-9a8d25093366",
+      "name": "Webhook",
+      "webhookId": "e41d3ebc-c46d-435e-8e4d-4b6a8ddadac8"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3ce52b8b-77f9-4be2-946c-b5ae474e7b68",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "=questions",
+        "limit": 10,
+        "matchType": "=",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "quiz_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.query.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        224,
+        16
+      ],
+      "id": "6cf1a505-ae2f-47a7-bb0b-2cabb3098b83",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "Pa35RWBh9mZBVxQy",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0d970839-bb0c-4bf4-ace7-288837e8d748",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce633715522fed7c810c382a8416068af510eb5efa2a068770ce7966e289da03"
+  },
+  "nodeGroups": [],
+  "id": "ruX17exbwpYHEnfv",
+  "tags": []
+}
