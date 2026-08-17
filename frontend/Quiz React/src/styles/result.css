@@ -1,0 +1,175 @@
+/* =========================
+   RESULT PAGE
+========================= */
+
+.result-container {
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 40px 20px;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(99, 102, 241, 0.08),
+            transparent 35%
+        ),
+        #f5f7ff;
+}
+
+.result-card {
+    width: 100%;
+
+    max-width: 650px;
+
+    background: white;
+
+    padding: 45px;
+
+    border-radius: 22px;
+
+    border: 1px solid #e5e7eb;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.08);
+}
+
+.result-card > h1 {
+    color: #2563eb;
+
+    margin-bottom: 25px;
+}
+
+.result-card > h2 {
+    font-size: 32px;
+
+    margin-bottom: 25px;
+}
+
+.result-card > p {
+    color: #64748b;
+
+    margin: 7px 0;
+}
+
+.score-section {
+    margin: 30px 0;
+
+    padding: 25px;
+
+    border-radius: 16px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+}
+
+.score-section h2 {
+    margin: 0 0 10px;
+
+    color: #475569;
+}
+
+.score-section h1 {
+    margin: 0;
+
+    color: #2563eb;
+
+    font-size: 48px;
+}
+
+.score-section p {
+    margin-top: 8px;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #4f46e5;
+}
+
+.result-summary {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+
+    margin: 25px 0;
+}
+
+.result-summary p {
+    margin: 0;
+
+    padding: 16px;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    font-weight: 600;
+}
+
+.result-card button {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #6366f1
+        );
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.result-card button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+@media (max-width: 600px) {
+
+    .result-container {
+        padding: 20px 12px;
+    }
+
+    .result-card {
+        padding: 30px 20px;
+    }
+
+    .result-card > h2 {
+        font-size: 26px;
+    }
+
+    .score-section h1 {
+        font-size: 40px;
+    }
+
+    .result-summary {
+        grid-template-columns: 1fr;
+    }
+}

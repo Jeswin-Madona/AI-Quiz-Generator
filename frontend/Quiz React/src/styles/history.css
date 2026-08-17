@@ -1,0 +1,140 @@
+.history-container {
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: #f5f7fb;
+}
+
+.history-card {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.history-header h1 {
+    margin: 0;
+    color: #2563eb;
+}
+
+.history-header p {
+    margin-top: 8px;
+    color: #666;
+}
+
+.back-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 1fr 150px 150px;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.history-item:hover {
+    transform: translateY(-2px);
+}
+
+.quiz-info h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.quiz-info span {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 13px;
+}
+
+.quiz-score {
+    text-align: center;
+}
+
+.quiz-score strong {
+    font-size: 20px;
+}
+
+.quiz-score p {
+    margin: 5px 0 0;
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.quiz-date {
+    text-align: right;
+    color: #777;
+    font-size: 14px;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-history h2 {
+    margin-bottom: 10px;
+}
+
+.empty-history p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.empty-history button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .history-item {
+        grid-template-columns: 1fr;
+    }
+
+    .quiz-score {
+        text-align: left;
+    }
+
+    .quiz-date {
+        text-align: left;
+    }
+}
