@@ -1,164 +1,287 @@
-# 🔄 n8n Workflows
+# AI Quiz Generator - n8n Workflows
 
-This folder contains the automation workflows used in the **AI Quiz Generator** project.
+## Overview
 
-The workflows automate quiz generation, database operations, and communication between the React frontend, Mistral AI, and Supabase.
+This folder contains the two final **n8n workflows** used by the AI Quiz Generator application.
+
+The workflows connect the React frontend with **Mistral AI** and **Supabase** to generate quizzes, store questions, retrieve existing quizzes, and return structured data to the frontend.
+
+### Workflows
+
+1. **AI Quiz Generation** - Creates and stores a new quiz.
+2. **Quiz Retrieval** - Retrieves a previously generated quiz and its questions using `quiz_id`.
 
 ---
 
-# 📁 Workflow Files
+# 1. AI Quiz Generation Workflow
 
-## 1. Generate Quiz.json
-
-
-![Quiz Generator Workflow](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow1.png)
-
+![Quiz Generator Workflow](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/258c1f962cba8b820a031b04b6ddc6492e095ba0/screenshots/workflow1.png)
 
 
 ### Purpose
 
-Generates a new AI-powered quiz based on the topic and difficulty selected by the user.
+This workflow receives quiz details from the React frontend, generates questions using Mistral AI, stores the quiz and questions in Supabase, and returns the generated `quiz_id`.
 
-### Workflow Steps
+### Flow
 
-1. Receives a request from the React application through a Webhook.
-2. Reads the following inputs:
-   - Topic
-   - Difficulty
-   - Number of Questions
-3. Sends the prompt to Mistral AI.
-4. Receives AI-generated quiz questions.
-5. Parses the AI response.
-6. Creates a new Quiz record in Supabase.
-7. Stores all generated questions into the Questions table.
-8. Returns the generated **Quiz ID** to the React application.
-
----
-
-## 2. Get Quiz.json
-
-![Get Quiz By ID](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow2.png)
-
-### Purpose
-
-Retrieves all quiz questions for a specific Quiz ID.
-
-### Workflow Steps
-
-1. Receives the Quiz ID from the React frontend.
-2. Queries the Questions table in Supabase.
-3. Filters questions using the provided Quiz ID.
-4. Returns the matching quiz questions as JSON.
-5. React displays the questions to the user.
-
----
-
-# 🏗 Workflow Architecture
-
-```
+```text
 React Frontend
-        │
-        ▼
-    n8n Webhook
-        │
-        ▼
-    Mistral AI
-        │
-        ▼
- Parse AI Response
-        │
-        ▼
- Supabase Database
-        │
-        ▼
-  Return JSON Response
-        │
-        ▼
- React Quiz Interface
+      ↓
+Webhook
+      ↓
+Create Quiz
+      ↓
+Mistral AI
+      ↓
+Code in JavaScript
+      ↓
+IF
+   ↓       ↓
+Limit   Failure Response
+   ↓
+Loop Over Items
+      ↓
+Create Question
+      ↓
+Respond to Webhook
+```
+
+### Node Explanation
+
+| Node                    | Purpose                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| **Webhook1**            | Receives topic, difficulty, and question count from React.                           |
+| **Create Quiz**         | Creates the main quiz record in the Supabase `quizzes` table.                        |
+| **Basic LLM Chain**     | Sends the quiz requirements to Mistral AI and generates questions.                   |
+| **Code in JavaScript**  | Parses and prepares the AI-generated JSON for processing.                            |
+| **IF**                  | Checks whether the generated quiz data is valid.                                     |
+| **Limit**               | Ensures only the requested number of questions is processed.                         |
+| **Loop Over Items**     | Processes each question individually.                                                |
+| **Create Question**     | Stores each question in the Supabase `questions` table with the generated `quiz_id`. |
+| **Respond to Webhook2** | Returns the final success response and `quiz_id` to React.                           |
+| **Respond to Webhook1** | Returns a failure response when the generated quiz data is invalid.                  |
+
+### Request
+
+```json
+{
+  "topic": "Java",
+  "difficulty": "Easy",
+  "number_of_questions": 10
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Quiz generated successfully",
+  "quiz_id": 511
+}
+```
+
+### Simple Flow
+
+```text
+Receive Request
+      ↓
+Create Quiz ID
+      ↓
+Generate Questions with Mistral AI
+      ↓
+Validate & Limit Questions
+      ↓
+Store Questions in Supabase
+      ↓
+Return Quiz ID
 ```
 
 ---
 
-# 📂 Database Tables
+# 2. Quiz Retrieval Workflow
 
-## quizzes
 
-Stores quiz information.
+![Get Quiz By ID](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/5a6c3e7351e403f0659f6ab34bc6d3e09e8573bf/screenshots/workflow2.png)
 
-Example fields:
 
-- id
-- topic
-- difficulty
-- created_at
+### Purpose
 
----
+This workflow receives a `quiz_id`, retrieves the corresponding quiz and its questions from Supabase, combines the data, and sends it back to the React application.
 
-## questions
+### Flow
 
-Stores generated quiz questions.
+```text
+React Frontend
+      ↓
+Webhook
+      ↓
+Get a Row
+      ↓
+Get Many Rows
+      ↓
+Code in JavaScript
+      ↓
+Respond to Webhook
+```
 
-Example fields:
+### Node Explanation
 
-- id
-- quiz_id
-- question
-- option_a
-- option_b
-- option_c
-- option_d
-- correct_answer
+| Node                   | Purpose                                                           |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Webhook**            | Receives the `quiz_id` from the React application.                |
+| **Get a Row**          | Retrieves the main quiz information from the `quizzes` table.     |
+| **Get Many Rows**      | Retrieves all questions associated with the selected `quiz_id`.   |
+| **Code in JavaScript** | Combines quiz details and questions into one structured response. |
+| **Respond to Webhook** | Sends the complete quiz data back to React.                       |
 
----
+### Simple Flow
 
-# 🔧 Required Credentials
-
-Before importing these workflows, configure the following credentials inside n8n.
-
-- Supabase
-- Mistral AI API
-- HTTP Request (if required)
-
----
-
-# 📥 Import Instructions
-
-1. Open n8n.
-2. Click **Import from File**.
-3. Select one of the JSON workflow files.
-4. Configure the required credentials.
-5. Save the workflow.
-6. Activate the workflow.
-7. Test using the configured webhook.
+```text
+Receive Quiz ID
+      ↓
+Get Quiz Details
+      ↓
+Get Related Questions
+      ↓
+Combine Data
+      ↓
+Return Quiz
+```
 
 ---
 
-# ⚠ Important Notes
+# Database Structure
 
-- Ensure the Supabase tables are created before executing the workflows.
-- Update API keys before running.
-- Verify the webhook URLs match the React frontend configuration.
-- Import **Generate Quiz** before testing **Get Quiz**.
+The workflows use **Supabase PostgreSQL**.
+
+### `quizzes`
+
+Stores the main information about each generated quiz.
+
+```text
+id
+topic
+difficulty
+number_of_questions
+created_at
+```
+
+### `questions`
+
+Stores individual questions belonging to a quiz.
+
+```text
+id
+quiz_id
+question
+option_a
+option_b
+option_c
+option_d
+correct_answer
+explanation
+created_at
+```
+
+The relationship is:
+
+```text
+quizzes.id
+    │
+    └── questions.quiz_id
+```
 
 ---
 
-# 🚀 Future Improvements
+# Complete Application Flow
 
-Planned enhancements include:
-
-- User Authentication
-- Student Profiles
-- Leaderboard
-- Quiz History
-- Performance Analytics
-- Admin Dashboard
-- Difficulty-based scoring
-- AI-generated explanations for answers
+```text
+                React Frontend
+                      │
+             Generate Quiz Request
+                      │
+                      ▼
+              Quiz Generation
+                  Webhook
+                      │
+                      ▼
+                 Mistral AI
+                      │
+                      ▼
+              Supabase Database
+                      │
+                  quiz_id
+                      │
+                      ▼
+               React Quiz Page
+                      │
+                Request quiz_id
+                      │
+                      ▼
+              Quiz Retrieval
+                  Webhook
+                      │
+                      ▼
+              Supabase Database
+                      │
+                      ▼
+              Quiz + Questions
+                      │
+                      ▼
+                 React UI
+```
 
 ---
 
-# 👨‍💻 Author
+# Required Configuration
 
-**Jeswin Madona**
+Before running the workflows, configure:
 
-This workflow was created as part of the **AI Quiz Generator** capstone project to demonstrate workflow automation using **n8n**, **Mistral AI**, **Supabase**, and **React**.
+* **Mistral AI credentials** for the Basic LLM Chain.
+* **Supabase credentials** for database operations.
+* Required `quizzes` and `questions` tables in Supabase.
+* Correct webhook URLs in the React frontend.
+
+> Keep API keys, database credentials, and private webhook URLs outside the GitHub repository.
+
+---
+
+# Setup
+
+1. Open your n8n instance.
+2. Import the workflow JSON files from this folder.
+3. Configure Mistral AI credentials.
+4. Configure Supabase credentials.
+5. Verify the `quizzes` and `questions` table mappings.
+6. Copy the production webhook URLs into the React frontend.
+7. Test quiz generation.
+8. Test quiz retrieval using the returned `quiz_id`.
+
+---
+
+# Important Notes
+
+* The **Generate Quiz** workflow creates the quiz record before storing its individual questions.
+* The `quiz_id` is used to connect every generated question with its parent quiz.
+* The **Limit** node ensures the workflow processes the requested number of questions.
+* The **Quiz Retrieval** workflow uses the same `quiz_id` to fetch the correct quiz and its questions.
+* Both workflows communicate with the React frontend through n8n webhooks.
+
+---
+
+## Technologies
+
+* **n8n** — Workflow automation
+* **Mistral AI** — AI quiz generation
+* **Supabase / PostgreSQL** — Quiz and question storage
+* **React.js** — Frontend application
+* **REST Webhooks** — Frontend ↔ n8n communication
+
+---
+
+## Related Documentation
+
+* **Main Project:** `../README.md`
+* **Frontend:** `../frontend/Quiz React/README.md`
+* **Workflow Files:** This folder
