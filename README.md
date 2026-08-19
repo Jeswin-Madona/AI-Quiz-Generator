@@ -1,281 +1,341 @@
 # 🤖 AI Quiz Generator
 
-An AI-powered Quiz Generator that creates multiple-choice quizzes instantly using **Mistral AI**, **n8n Workflow Automation**, **Supabase**, and **React**.
+An AI-powered quiz generation platform that creates multiple-choice quizzes dynamically using **Mistral AI**, **n8n**, **Supabase**, and **React**.
 
-The application allows users to select a topic and difficulty level, generates AI-based quiz questions, stores them in a PostgreSQL database, and displays the quiz through a modern React interface.
+Users can select a topic, difficulty level, and number of questions. The system generates questions using AI, stores them in Supabase, and provides an interactive quiz experience with result and answer-review features.
 
 ![Cover Image](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/cover%20page.png)
 
+---
+
+## ✨ Features
+
+- 🔐 User Login & Signup
+- 🤖 AI-powered quiz generation
+- 🎯 Topic and difficulty selection
+- 📝 Custom number of questions
+- ⚙️ n8n workflow automation
+- 🗄️ Supabase PostgreSQL database
+- 📊 Automatic score calculation
+- 📖 Answer review
+- 📚 Quiz history
+- 🏆 Leaderboard
+- 📈 Performance analytics
+- 📱 Responsive React interface
 
 ---
 
-## 🚀 Features
+## 🛠️ Tech Stack
 
-- 🔐 Simple Login UI
-- 🤖 AI-generated quiz questions using Mistral AI
-- ⚙️ Workflow automation using n8n
-- 🗄️ Stores quizzes and questions in Supabase
-- 🎯 Dynamic quiz generation
-- 📊 Quiz evaluation and score calculation
-- 📖 Review answers after completion
-- 📱 Clean and responsive React interface
-
----
-
-# 🛠 Tech Stack
-
-### Frontend
-- React.js
-- JavaScript
-- React Router
-- Axios
-- CSS
-
-### Backend & Automation
-- n8n
-- REST APIs
-
-### AI
-- Mistral AI
-
-### Database
-- Supabase
-- PostgreSQL
+| Technology | Purpose |
+|---|---|
+| React.js | Frontend application |
+| JavaScript | Application logic |
+| React Router | Client-side routing |
+| Axios | API communication |
+| CSS | UI styling |
+| n8n | Workflow automation |
+| Mistral AI | AI question generation |
+| Supabase | Authentication & database |
+| PostgreSQL | Data storage |
 
 ---
 
-# 🏗 System Architecture
+## 🏗️ System Architecture
 
-```
-User
-   │
-   ▼
-React Frontend
-   │
-   ▼
-Axios API Request
-   │
-   ▼
-n8n Webhook
-   │
-   ▼
-Mistral AI
-   │
-   ▼
-Supabase Database
-   │
-   ▼
-React Quiz Interface
-```
+```text
+                    ┌─────────────────┐
+                    │      User       │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │ React Frontend  │
+                    └────────┬────────┘
+                             │
+                         Axios API
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │   n8n Webhook   │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │   Mistral AI    │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │    Supabase     │
+                    │   PostgreSQL    │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │   Quiz UI /     │
+                    │ Results / Review│
+                    └─────────────────┘
+````
+
 ![Architecture](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/c04193be2e4f09393510a26a7ddd2761eb78b2da/screenshots/architecture.png)
 
 ---
 
-# ⚙ Workflow Overview
+## ⚙️ How It Works
 
-## Quiz Generation Workflow
+### Quiz Generation
 
-1. User selects Topic & Difficulty
-2. React sends request to n8n
-3. n8n calls Mistral AI
-4. AI generates quiz questions
-5. Questions are stored in Supabase
-6. Quiz ID is returned to React
-7. Quiz page loads automatically
-
----
-
-## Quiz Retrieval Workflow
-
-1. React sends Quiz ID
-2. n8n retrieves questions from Supabase
-3. Questions are returned to React
-4. User answers the quiz
-5. Score is calculated and displayed
-
----
-
-# 📁 Project Structure
-
+```text
+User selects:
+Topic + Difficulty + Number of Questions
+              ↓
+       React Frontend
+              ↓
+         n8n Webhook
+              ↓
+          Mistral AI
+              ↓
+     Generate Questions
+              ↓
+        Supabase DB
+              ↓
+          Quiz ID
+              ↓
+        React Quiz Page
 ```
-AI-Quiz-Generator
+
+### Quiz Retrieval
+
+```text
+React requests Quiz ID
+          ↓
+     n8n Webhook
+          ↓
+   Supabase Database
+          ↓
+     Quiz Questions
+          ↓
+      React Quiz UI
+```
+
+After completing the quiz, the frontend calculates the score and displays the result. Users can also review their answers and track previous quiz attempts.
+
+---
+
+## 📁 Repository Structure
+
+```text
+AI-Quiz-Generator/
 │
 ├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
+│   └── Quiz React/
+│       ├── public/
+│       ├── src/
+│       ├── package.json
+│       └── README.md
 │
 ├── workflows/
 │   ├── Generate Quiz.json
-│   └── Get Quiz.json
+│   ├── Get Quiz.json
+│   └── README.md
 │
 ├── screenshots/
-│
-├── documentation/
 │
 ├── README.md
 └── LICENSE
 ```
 
----
-
-# 📷 Screenshots
-
-### Login Page
-
-![Login Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/login%20page.png)
+The project contains separate documentation for the **React frontend** and **n8n workflows**.
 
 ---
 
-### Home Page
+## 📷 Application Screenshots
 
-![Home Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/home%20page.png)
+### Login
+
+![Login](screenshots/login%20page.png)
+
+### Home
+
+![Home](screenshots/home%20page.png)
+
+### Quiz
+
+![Quiz](screenshots/quiz%20page.png)
+
+### Result
+
+![Result](screenshots/result%20page.png)
+
+### Review
+
+![Review](screenshots/review%20page.png)
+
+### Quiz History
+
+![History](screenshots/history%20page.png)
+
+### Leaderboard
+
+![Leaderboard](screenshots/leaderboard%20page.png)
+
+### Analytics
+
+![Analytics](screenshots/analytics%20page.png)
 
 ---
 
-### Quiz Page
+## ⚙️ n8n Workflows
 
-![Quiz Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/quiz%20page.png)
+The project uses two main n8n workflows:
+
+### 1. Generate Quiz
+
+Responsible for:
+
+* Receiving quiz configuration from React
+* Sending the prompt to Mistral AI
+* Processing AI-generated questions
+* Creating the quiz record
+* Storing individual questions in Supabase
+* Returning the generated `quiz_id`
+
+### 2. Get Quiz
+
+Responsible for:
+
+* Receiving a `quiz_id`
+* Retrieving the corresponding quiz questions from Supabase
+* Returning the questions to the React application
+
+Detailed workflow documentation is available in:
+
+```text
+workflows/README.md
+```
 
 ---
 
-### Result Page
+## 🚀 Getting Started
 
-![Result Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/result%20page.png)
-
----
-
-### Review Page
-
-![Review Page](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/review%20page.png)
-
----
-
-### n8n Workflow
-
-![Quiz Generator Workflow](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow1.png)
-
-![Get Quiz By ID](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/cc963f71c464fd518bb0ec47cc95448aa201766c/screenshots/workflow2.png)
-
----
-
-# 🚀 Getting Started
-
-## Clone Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Jeswin-Madona/AI-Quiz-Generator.git
 ```
 
----
-
-## Navigate to Frontend
-
 ```bash
-cd frontend
+cd AI-Quiz-Generator
 ```
 
----
+### 2. Setup Frontend
 
-## Install Dependencies
+```bash
+cd frontend/Quiz\ React
+```
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
----
-
-## Run React Application
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
----
+The React application will run on the Vite development server.
 
-## Import n8n Workflows
+### 3. Setup n8n
 
-Import the following workflow files into your n8n instance.
+Import the workflow JSON files from:
 
-- Generate Quiz.json
-- Get Quiz.json
+```text
+workflows/
+```
 
----
+Configure the required credentials:
 
-## Configure
+* Mistral AI
+* Supabase
 
-Create and configure:
+Make sure the webhook URLs used by the React frontend match the URLs configured in n8n.
 
-- Mistral AI Credentials
-- Supabase Credentials
+### 4. Setup Supabase
 
-Update the webhook URLs inside the React application if required.
+Create the required Supabase project and database tables for:
 
----
+* User profiles
+* Quizzes
+* Quiz questions
+* Quiz attempts
 
-# 📚 What I Learned
-
-This project helped me gain practical experience in:
-
-- React Application Development
-- Workflow Automation using n8n
-- REST API Integration
-- AI Integration using Mistral AI
-- PostgreSQL Database Design
-- Supabase
-- State Management
-- Debugging Real-world Workflow Issues
-- Building End-to-End Applications
+Configure Supabase authentication for user login and signup.
 
 ---
 
-# 🚧 Challenges Faced
+## 🔑 Environment Configuration
 
-Some challenges during development included:
+Create the required environment variables for the React application.
 
-- Passing Quiz IDs between workflows
-- React routing issues
-- Webhook registration errors
-- Database filtering
-- Mapping AI responses correctly
-- Connecting multiple technologies seamlessly
+Example:
 
-Solving these problems greatly improved my debugging and problem-solving skills.
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_N8N_BASE_URL=your_n8n_webhook_url
+```
 
----
-
-# 🔮 Future Improvements
-
-- ✅ User Authentication
-- 👨‍🎓 Student Profiles
-- 🏆 Leaderboard
-- 📊 Performance Analytics
-- 📜 Quiz History
-- 🌙 Dark Mode
-- 📄 PDF Report Generation
-- 👨‍🏫 Admin Dashboard
+Do **not** commit private API keys, service-role keys, passwords, or other sensitive credentials to GitHub.
 
 ---
 
-# 👨‍💻 Author
+## 📚 Project Learning
 
-**Jeswin Madona**
+This project provided practical experience with:
+
+* React application development
+* REST API integration
+* n8n workflow automation
+* AI integration using Mistral AI
+* Supabase authentication
+* PostgreSQL database operations
+* React routing and protected routes
+* Frontend-backend integration
+* Debugging API and workflow issues
+* Building an end-to-end AI application
+
+---
+
+## 🔮 Future Improvements
+
+* 🎨 Improved UI/UX
+* 🌙 Dark mode
+* 📄 PDF quiz reports
+* 👨‍🏫 Admin dashboard
+* ⏱️ Quiz timer
+* 🎯 More question categories
+* 📱 Improved mobile experience
+
+---
+
+## 👨‍💻 Author
+
+### Jeswin Madona
 
 Computer Science Engineering Student
 
-Passionate about
+**GitHub:**
+[https://github.com/Jeswin-Madona](https://github.com/Jeswin-Madona)
 
-- Java Backend Development
-- Workflow Automation
-- Artificial Intelligence
-- Full Stack Development
-
-GitHub:
-https://github.com/Jeswin-Madona
-
-LinkedIn:
-https://www.linkedin.com/in/jeswinmadona
+**LinkedIn:**
+[https://www.linkedin.com/in/jeswinmadona](https://www.linkedin.com/in/jeswinmadona)
 
 ---
 
-⭐ If you found this project helpful, consider giving this repository a Star!
+## ⭐ Support
+
+If you find this project useful or interesting, consider giving the repository a ⭐ Star.
