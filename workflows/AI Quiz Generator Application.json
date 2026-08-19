@@ -1,0 +1,836 @@
+{
+  "name": "AI Quiz Generator Application",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "get-quiz",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2416,
+        1184
+      ],
+      "id": "b18a87c8-2c94-4cd0-8941-998462d82dce",
+      "name": "Webhook",
+      "webhookId": "e41d3ebc-c46d-435e-8e4d-4b6a8ddadac8"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -800,
+        1200
+      ],
+      "id": "50fd0846-32d7-48f7-8550-57bebb2d1418",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "=questions",
+        "returnAll": true,
+        "orderBy": "=",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "quiz_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        1184
+      ],
+      "id": "6bf11567-f7d9-499e-977f-4b05bc9fda7b",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "Pa35RWBh9mZBVxQy",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "quizzes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.query.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2064,
+        1184
+      ],
+      "id": "e448651e-cc30-46ee-9865-744c043d0056",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "Pa35RWBh9mZBVxQy",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const quiz = $(\"Get a row\").first().json;\n\nconst questions = $(\"Get many rows\").all().map(item => ({\n    question: item.json.question,\n    option_a: item.json.option_a,\n    option_b: item.json.option_b,\n    option_c: item.json.option_c,\n    option_d: item.json.option_d,\n    correct_answer: item.json.correct_answer,\n    explanation: item.json.explanation\n}));\n\nreturn [\n    {\n        json: {\n            quiz: {\n                id: quiz.id,\n                topic: quiz.topic,\n                difficulty: quiz.difficulty,\n                number_of_questions: quiz.number_of_questions\n            },\n            questions: questions\n        }\n    }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1232,
+        1184
+      ],
+      "id": "e4f75ebc-422a-4b8a-b663-730e90df991e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert quiz generator.\n\nGenerate EXACTLY {{ $json.number_of_questions }}multiple-choice questions.\n\nTopic: {{ $json.topic }}\nDifficulty: {{ $json.difficulty }}\n\nIMPORTANT RULES:\n1. Generate EXACTLY the requested number of questions.\n2. Questions must ONLY be about the selected topic.\n3. Do not mix topics.\n4. Match the requested difficulty.\n5. Each question must have exactly 4 options.\n6. Only ONE option must be correct.\n7. The correct answer must exactly match one of the four options.\n8. Never create two options that are technically equivalent or both correct.\n9. Before returning each question, verify that exactly ONE option is correct.\n10. Do not generate duplicate questions.\n11. Return ONLY valid JSON.\n12. Do NOT use markdown.\n13. Do NOT use ```.\n\nReturn exactly this structure:\n\n[\n  {\n    \"question\": \"Question text\",\n    \"option_a\": \"Option A\",\n    \"option_b\": \"Option B\",\n    \"option_c\": \"Option C\",\n    \"option_d\": \"Option D\",\n    \"correct_answer\": \"The exact correct option\",\n    \"explanation\": \"Short explanation\"\n  }\n]",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -2256,
+        -96
+      ],
+      "id": "a836f73a-25a0-4314-8e10-54430a113261",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "mistral-large-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -2112,
+        32
+      ],
+      "id": "59424e94-b750-4991-a7b3-4be06ae1fcee",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "FwPjCIS9CtQtW2Jy",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -368,
+        -144
+      ],
+      "id": "9fe36e8f-0956-4ef2-84b9-f5c749a1b7e2",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "tableId": "questions",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "quiz_id",
+              "fieldValue": "={{ $('Create Quiz').item.json.id }}"
+            },
+            {
+              "fieldId": "question",
+              "fieldValue": "={{ $json.question }}"
+            },
+            {
+              "fieldId": "option_a",
+              "fieldValue": "={{ $json.option_a }}"
+            },
+            {
+              "fieldId": "option_b",
+              "fieldValue": "={{ $json.option_b }}"
+            },
+            {
+              "fieldId": "option_c",
+              "fieldValue": "={{ $json.option_c }}"
+            },
+            {
+              "fieldId": "option_d",
+              "fieldValue": "={{ $json.option_d }}"
+            },
+            {
+              "fieldId": "correct_answer",
+              "fieldValue": "={{ $json.correct_answer }}"
+            },
+            {
+              "fieldId": "explanation",
+              "fieldValue": "={{ $json.explanation }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "449f2730-555e-4d5b-a9e6-adefd06eeed8",
+      "name": "Create Question",
+      "credentials": {
+        "supabaseApi": {
+          "id": "Pa35RWBh9mZBVxQy",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e779f470-e42c-4c9f-93a6-454bcb720075",
+              "leftValue": "={{ $json.question }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "706b6f6c-18db-41ac-bb5b-25abea996424",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1296,
+        -96
+      ],
+      "id": "89b5e541-6f39-4bd0-95d5-3712e2955eb4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"No questions were generated.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -848,
+        32
+      ],
+      "id": "3aa5b95a-927e-4467-bf7f-82eb0ad9d113",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "tableId": "quizzes",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "topic",
+              "fieldValue": "={{ $('Webhook1').item.json.body.topic }}"
+            },
+            {
+              "fieldId": "number_of_questions",
+              "fieldValue": "={{ $('Webhook1').item.json.body.number_of_questions }}"
+            },
+            {
+              "fieldId": "difficulty",
+              "fieldValue": "={{ $json.body.difficulty }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -2608,
+        -80
+      ],
+      "id": "98280d6e-1ad7-4406-9bee-2d44757bf895",
+      "name": "Create Quiz",
+      "credentials": {
+        "supabaseApi": {
+          "id": "Pa35RWBh9mZBVxQy",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-quiz",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3008,
+        -80
+      ],
+      "id": "1b322993-2538-420a-94cd-7184699d8a77",
+      "name": "Webhook1",
+      "webhookId": "681f3a3b-b2d5-4a47-874e-73c3ed9639e7"
+    },
+    {
+      "parameters": {
+        "jsCode": "const quiz = JSON.parse($input.first().json.text);\n\n// Get original request data from Webhook\nconst webhookData = $('Webhook1').first().json.body;\n\n// Return one item per question\nreturn quiz.map(question => ({\n  json: {\n    ...question,\n\n    topic: webhookData.topic,\n    difficulty: webhookData.difficulty,\n    number_of_questions: webhookData.number_of_questions\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1680,
+        -96
+      ],
+      "id": "494df742-f561-4912-bf7d-71ea7d2d79a1",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Quiz generated successfully\",\n  \"quiz_id\": {{ $('Create Quiz').first().json.id }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -80,
+        -272
+      ],
+      "id": "8f2860f8-23de-4e47-8b4d-c6c542821ff6",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "content": "## AI Quiz Generation\n\nThis workflow creates a complete quiz and saves it in Supabase.\n\n## Simple Flow\n\n1. Receive → React sends topic, difficulty, and question count.\n2. Generate → AI creates the questions.\n3. Prepare → JavaScript processes the AI response.\n4. Limit → Keeps the required number of questions.\n5. Create Quiz → Saves the quiz and gets a quiz_id.\n6. Create Questions → Saves every question with that quiz_id.\n7. Respond → Sends the quiz_id back to React.\n\n## In short:\nReact → AI generates → Process → Save Quiz → Save Questions → Return Quiz ID",
+        "height": 640,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3872,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "8fca3964-27d6-47ec-b3c5-4f12c1f7172c",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## Webhook1\n\nReceives quiz details from the React app - topic, difficulty, and number of questions.",
+        "height": 368,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3184,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "3ed65267-030e-4c7f-95f0-f4fba5211002",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "maxItems": "={{ $json.number_of_questions }}"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -208
+      ],
+      "id": "09473880-b4c4-43c5-8144-bf26377172c3",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "content": "## Create Quiz\n\nCreates the quiz record in the quizzes table and generates a unique quiz_id.\n",
+        "height": 368,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2736,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "f3534e47-4fec-4234-aacd-a92bb0c59e42",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Basic LLM Chain\n\nUses the AI model to generate quiz questions based on the user's selected requirements.\n",
+        "height": 448,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2304,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "e02d62f1-d24e-48d8-8c50-2a7ec20e65ab",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## Code in JavaScript\n\nConverts the AI-generated JSON text into separate question objects and prepares them for processing.\n",
+        "height": 320,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1872,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "0224664e-c89b-48bd-b254-df549258a52d",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "## If\n\nChecks whether the generated quiz data is valid before continuing the workflow.\n",
+        "height": 304,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1440,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "3923d234-2a8a-4c39-9402-5c299ecf94d8",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "content": "## Limit\n\nControls the number of questions according to the user's selection — 5, 10, or 15.\n",
+        "height": 336,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1008,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "89f3da37-eabf-42bb-bf88-b81560c042b7",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n## Failure Response \nIf AI module fail to generate the content it sends the failure response to the frontend. ",
+        "height": 320,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1008,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "494a3e9e-6745-4a78-a8d4-f4ee88de70d1",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "## Loop Over Items\n\nProcesses each generated question individually so every question can be stored separately.\n",
+        "height": 400,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "1e202a48-87e7-46ae-848c-30588f990825",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "## Respond to Webhook \n\nSends the final success response and quiz ID back to the React application.",
+        "height": 336,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        -448
+      ],
+      "typeVersion": 1,
+      "id": "74307643-f400-4b4b-94e0-568c2618596e",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n## Create Question\n\nStores each question and its options in the questions table using the generated quiz_id.\n",
+        "height": 336,
+        "width": 400,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "16e80c7f-b2cf-441c-b1d2-db64704da1aa",
+      "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "content": "## Get a Row\n\nRetrieves the selected quiz details from the quizzes table using the quiz ID.\n\n",
+        "height": 352,
+        "width": 336,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2144,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "cf1b4112-8985-40e2-a49d-b0e4ec6c7ca3",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "content": "## Webhook\n\nReceives the quiz_id from the React application to identify the requested quiz.\n",
+        "height": 336,
+        "width": 336,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2560,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "8e1fc4db-e3df-42af-8ea4-6998412483ce",
+      "name": "Sticky Note22"
+    },
+    {
+      "parameters": {
+        "content": "## Get Many Rows\n\nRetrieves all questions belonging to the selected quiz using quiz_id.\n\n",
+        "height": 336,
+        "width": 352,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1744,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "4edee751-a38c-41b2-a8f2-4ccf40180404",
+      "name": "Sticky Note23"
+    },
+    {
+      "parameters": {
+        "content": "## Code\n\nCombines the quiz information and all its questions into one structured JSON response.\n\n",
+        "height": 336,
+        "width": 336,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1328,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "0763e81f-0c0e-4d7f-a691-f38af3632c7a",
+      "name": "Sticky Note24"
+    },
+    {
+      "parameters": {
+        "content": "## Respond to Webhook\n\nSends the complete quiz data back to React so the questions can be displayed on the quiz page.\n\n",
+        "height": 352,
+        "width": 352,
+        "color": "#EDE8E8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -928,
+        1008
+      ],
+      "typeVersion": 1,
+      "id": "7f6e75db-7a22-4e77-95f9-d3c512b8955e",
+      "name": "Sticky Note25"
+    },
+    {
+      "parameters": {
+        "content": "##Quiz Retrieval\n\nThis workflow gets a previously created quiz from Supabase and sends it to the React application.\n\n## Simple Flow\n\n1. Receive → React sends the quiz_id.\n2. Find Quiz → Get the quiz details from Supabase.\n3. Find Questions → Get all questions matching that quiz_id.\n4. Combine → Organize the quiz and questions into one response.\n5. Respond → Send the complete quiz back to React.\n\n## In short:\nReact → Quiz ID → Get Quiz → Get Questions → Combine → Return Quiz",
+        "height": 560,
+        "width": 576
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3264,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "35d2a18d-ff5a-42dc-b619-14bf187ff745",
+      "name": "Sticky Note26"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 768,
+        "width": 2816,
+        "color": "#FFFFFF"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3328,
+        752
+      ],
+      "typeVersion": 1,
+      "id": "88e288b0-d172-492c-be32-37234c06cc84",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 1120,
+        "width": 4400,
+        "color": "#FCFCFC"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3984,
+        -608
+      ],
+      "typeVersion": 1,
+      "id": "74b62e03-10f0-45cf-9600-a4ed46e4813f",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Question": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Quiz": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Create Quiz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d4864cdd-7bbb-49bf-a5eb-19a6e2ad9f66",
+  "meta": {
+    "instanceId": "ce633715522fed7c810c382a8416068af510eb5efa2a068770ce7966e289da03"
+  },
+  "nodeGroups": [],
+  "id": "hciJZ1srK1DrJu3p",
+  "tags": []
+}
