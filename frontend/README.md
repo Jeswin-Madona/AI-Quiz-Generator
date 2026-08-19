@@ -1,239 +1,187 @@
-# 🤖 AI Quiz Generator
+# 🎨 AI Quiz Generator — Frontend
 
-An AI-powered Quiz Generator that creates multiple-choice quizzes instantly using **Mistral AI**, **n8n Workflow Automation**, **Supabase**, and **React**.
-
-The application allows users to select a topic and difficulty level, generates AI-based quiz questions, stores them in a PostgreSQL database, and displays the quiz through a modern React interface.
+The frontend of the AI Quiz Generator is built using **React.js**. It provides the user interface for authentication, quiz generation, quiz participation, results, review, history, leaderboard, and analytics.
 
 ---
 
-## 🚀 Features
+## 🛠️ Tech Stack
 
-- 🔐 Simple Login UI
-- 🤖 AI-generated quiz questions using Mistral AI
-- ⚙️ Workflow automation using n8n
-- 🗄️ Stores quizzes and questions in Supabase
-- 🎯 Dynamic quiz generation
-- 📊 Quiz evaluation and score calculation
-- 📖 Review answers after completion
-- 📱 Clean and responsive React interface
-
----
-
-# 🛠 Tech Stack
-
-### Frontend
 - React.js
 - JavaScript
 - React Router
 - Axios
-- CSS
-
-### Backend & Automation
-- n8n
-- REST APIs
-
-### AI
-- Mistral AI
-
-### Database
 - Supabase
-- PostgreSQL
+- CSS
+- Vite
 
 ---
 
-# 🏗 System Architecture
+## ✨ Features
 
-```
-User
-   │
-   ▼
-React Frontend
-   │
-   ▼
-Axios API Request
-   │
-   ▼
+- 🔐 Login & Signup
+- 🏠 User Dashboard
+- 🤖 AI Quiz Generation
+- 🎯 Topic & Difficulty Selection
+- 🔢 Custom Question Count
+- 📝 Interactive Quiz
+- 📊 Score & Result
+- 📖 Answer Review
+- 📚 Quiz History
+- 🏆 Leaderboard
+- 📈 Performance Analytics
+- 🔒 Protected Routes
+
+---
+
+## 📁 Project Structure
+
+```text
+Quiz React/
+│
+├── public/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── lib/
+│   ├── styles/
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── package.json
+├── package-lock.json
+└── README.md
+````
+
+---
+
+## 🔄 Application Flow
+
+```text
+Login / Signup
+      ↓
+Home Dashboard
+      ↓
+Select Topic + Difficulty + Questions
+      ↓
+Generate Quiz
+      ↓
 n8n Webhook
-   │
-   ▼
-Mistral AI
-   │
-   ▼
-Supabase Database
-   │
-   ▼
-React Quiz Interface
+      ↓
+Quiz Page
+      ↓
+Submit Quiz
+      ↓
+Result
+      ↓
+Review / History / Analytics
 ```
 
 ---
 
-# ⚙ Workflow Overview
+## 🌐 API Integration
 
-## Quiz Generation Workflow
+The frontend communicates with the n8n workflows using Axios.
 
-1. User selects Topic & Difficulty
-2. React sends request to n8n
-3. n8n calls Mistral AI
-4. AI generates quiz questions
-5. Questions are stored in Supabase
-6. Quiz ID is returned to React
-7. Quiz page loads automatically
+### Generate Quiz
 
----
-
-## Quiz Retrieval Workflow
-
-1. React sends Quiz ID
-2. n8n retrieves questions from Supabase
-3. Questions are returned to React
-4. User answers the quiz
-5. Score is calculated and displayed
-
----
-
-# 📁 Project Structure
-
-```
-AI-Quiz-Generator
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-│
-├── workflows/
-│   ├── Generate Quiz.json
-│   └── Get Quiz.json
-│
-├── screenshots/
-│
-├── documentation/
-│
-├── README.md
-└── LICENSE
+```text
+POST /webhook-test/generate-quiz
 ```
 
----
+Example request:
 
-
-
-# 🚀 Getting Started
-
-## Clone Repository
-
-```bash
-git clone https://github.com/Jeswin-Madona/AI-Quiz-Generator.git
+```json
+{
+  "topic": "Java",
+  "difficulty": "Easy",
+  "number_of_questions": 10
+}
 ```
 
----
+Example response:
 
-## Navigate to Frontend
-
-```bash
-cd frontend
+```json
+{
+  "success": true,
+  "message": "Quiz generated successfully",
+  "quiz_id": 511
+}
 ```
 
+### Get Quiz
+
+```text
+GET /webhook-test/get-quiz?id=511
+```
+
+The quiz ID is used to retrieve the corresponding questions from Supabase through the n8n workflow.
+
 ---
 
-## Install Dependencies
+## 🚀 Setup
+
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
----
+### 2. Configure Environment Variables
 
-## Run React Application
+Create a `.env` file:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_N8N_BASE_URL=your_n8n_base_url
+```
+
+### 3. Start the Application
 
 ```bash
 npm run dev
 ```
 
----
+The application runs on the Vite development server, usually:
 
-## Import n8n Workflows
-
-Import the following workflow files into your n8n instance.
-
-- Generate Quiz.json
-- Get Quiz.json
+```text
+http://localhost:5173
+```
 
 ---
 
-## Configure
+## 🔗 Dependencies
 
-Create and configure:
+The frontend requires:
 
-- Mistral AI Credentials
-- Supabase Credentials
+* **Supabase** - Authentication and database access
+* **n8n** - Quiz generation and retrieval workflows
+* **Mistral AI** - AI question generation
 
-Update the webhook URLs inside the React application if required.
+For workflow setup, see:
 
----
+```text
+../../workflows/README.md
+```
 
-# 📚 What I Learned
+For the complete project overview, see:
 
-This project helped me gain practical experience in:
-
-- React Application Development
-- Workflow Automation using n8n
-- REST API Integration
-- AI Integration using Mistral AI
-- PostgreSQL Database Design
-- Supabase
-- State Management
-- Debugging Real-world Workflow Issues
-- Building End-to-End Applications
+```text
+../../README.md
+```
 
 ---
 
-# 🚧 Challenges Faced
-
-Some challenges during development included:
-
-- Passing Quiz IDs between workflows
-- React routing issues
-- Webhook registration errors
-- Database filtering
-- Mapping AI responses correctly
-- Connecting multiple technologies seamlessly
-
-Solving these problems greatly improved my debugging and problem-solving skills.
-
----
-
-# 🔮 Future Improvements
-
-- ✅ User Authentication
-- 👨‍🎓 Student Profiles
-- 🏆 Leaderboard
-- 📊 Performance Analytics
-- 📜 Quiz History
-- 🌙 Dark Mode
-- 📄 PDF Report Generation
-- 👨‍🏫 Admin Dashboard
-
----
-
-# 👨‍💻 Author
+## 👨‍💻 Author
 
 **Jeswin Madona**
 
 Computer Science Engineering Student
 
-Passionate about
+[GitHub](https://github.com/Jeswin-Madona)
 
-- Java Backend Development
-- Workflow Automation
-- Artificial Intelligence
-- Full Stack Development
+[LinkedIn](https://www.linkedin.com/in/jeswinmadona)
 
-GitHub:
-https://github.com/Jeswin-Madona
 
-LinkedIn:
-https://www.linkedin.com/in/jeswinmadona
-
----
-
-⭐ If you found this project helpful, consider giving this repository a Star!
