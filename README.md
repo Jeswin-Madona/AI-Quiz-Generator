@@ -174,7 +174,7 @@ The project contains separate documentation for the **React frontend** and **n8n
 
 ### Quiz History
 
-![History]([screenshots/history%20page.png](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/f41aebc9f7fb9d5e3717cfa521edc8a4c4e75ac6/screenshots/quiz%20history%20page.png))
+![History](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/c5c8d6afd02a4b3e48981e5f4cbee87f14b49835/screenshots/quiz%20history%20page.png)
 
 ### Leaderboard
 
