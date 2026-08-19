@@ -192,6 +192,8 @@ The project uses two main n8n workflows:
 
 ### 1. Generate Quiz
 
+![Workflow 1](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/5a6c3e7351e403f0659f6ab34bc6d3e09e8573bf/screenshots/workflow1.png)
+
 Responsible for:
 
 * Receiving quiz configuration from React
@@ -202,6 +204,8 @@ Responsible for:
 * Returning the generated `quiz_id`
 
 ### 2. Get Quiz
+
+![Workflow 2](https://github.com/Jeswin-Madona/AI-Quiz-Generator/blob/5a6c3e7351e403f0659f6ab34bc6d3e09e8573bf/screenshots/workflow2.png)
 
 Responsible for:
 
